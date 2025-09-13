@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Library Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+
+        .nav-tab.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .tab-content {
+            padding: 30px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .book-card {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .book-info {
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .book-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-borrowed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Simple Library Management</h1>
+            <p>Easy book management system</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showTab('add-book')">Add Book</button>
+            <button class="nav-tab" onclick="showTab('manage-books')">All Books</button>
+            <button class="nav-tab" onclick="showTab('borrow-return')">Issue/Return</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-pane active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-books">0</div>
+                        <div>Total Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="available-books">0</div>
+                        <div>Available</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="issued-books">0</div>
+                        <div>Issued</div>
+                    </div>
+                </div>
+                <h3>All Books:</h3>
+                <div id="dashboard-books"></div>
+            </div>
+
+            <!-- Add Book Tab -->
+            <div id="add-book" class="tab-pane">
+                <h2>Add New Book</h2>
+                <div id="add-alert"></div>
+                <form id="add-book-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="book-title">Book Title *</label>
+                            <input type="text" id="book-title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="book-author">Author *</label>
+                            <input type="text" id="book-author" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-category">Category</label>
+                        <select id="book-category" class="form-control">
+                            <option value="General">General</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Education">Education</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Book</button>
+                </form>
+            </div>
+
+            <!-- Manage Books Tab -->
+            <div id="manage-books" class="tab-pane">
+                <h2>All Books</h2>
+                <div class="form-group">
+                    <input type="text" id="search-input" class="form-control" placeholder="Search books by title or author...">
+                </div>
+                <div id="all-books"></div>
+            </div>
+
+            <!-- Issue/Return Tab -->
+            <div id="borrow-return" class="tab-pane">
+                <div id="issue-alert"></div>
+                <div class="form-row">
+                    <div>
+                        <h3>Issue Book</h3>
+                        <form id="issue-form">
+                            <div class="form-group">
+                                <label for="issue-book-id">Book ID *</label>
+                                <input type="number" id="issue-book-id" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="student-name">Student Name *</label>
+                                <input type="text" id="student-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="issue-date">Issue Date *</label>
+                                <input type="date" id="issue-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="return-date">Return Date *</label>
+                                <input type="date" id="return-date" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-success">Issue Book</button>
+                        </form>
+                    </div>
+                    <div>
+                        <h3>Return Book</h3>
+                        <form id="return-form">
+                            <div class="form-group">
+                                <label for="return-book-id">Book ID *</label>
+                                <input type="number" id="return-book-id" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Return Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple in-memory database
+        let books = [];
+        let nextId = 1;
+
+        // Initialize with some sample books
+        function initializeBooks() {
+            books = [
+                {
+                    id: 1,
+                    title: "The Great Gatsby",
+                    author: "F. Scott Fitzgerald",
+                    category: "Fiction",
+                    available: true,
+                    issuedTo: null,
+                    issueDate: null,
+                    returnDate: null
+                },
+                {
+                    id: 2,
+                    title: "To Kill a Mockingbird",
+                    author: "Harper Lee",
+                    category: "Fiction",
+                    available: true,
+                    issuedTo: null,
+                    issueDate: null,
+                    returnDate: null
+                },
+                {
+                    id: 3,
+                    title: "1984",
+                    author: "George Orwell",
+                    category: "Fiction",
+                    available: false,
+                    issuedTo: "John Doe",
+                    issueDate: "2024-01-15",
+                    returnDate: "2024-01-29"
+                }
+            ];
+            nextId = 4;
+            updateDashboard();
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active from nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Update content
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            } else if (tabName === 'manage-books') {
+                displayAllBooks();
+            }
+        }
+
+        function updateDashboard() {
+            const totalBooks = books.length;
+            const availableBooks = books.filter(book => book.available).length;
+            const issuedBooks = totalBooks - availableBooks;
+            
+            document.getElementById('total-books').textContent = totalBooks;
+            document.getElementById('available-books').textContent = availableBooks;
+            document.getElementById('issued-books').textContent = issuedBooks;
+            
+            displayBooksInContainer('dashboard-books', books.slice(-5));
+        }
+
+        function displayAllBooks() {
+            displayBooksInContainer('all-books', books);
+        }
+
+        function displayBooksInContainer(containerId, booksList) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (booksList.length === 0) {
+                container.innerHTML = '<p>No books found.</p>';
+                return;
+            }
+            
+            booksList.forEach(book => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                
+                const statusClass = book.available ? 'status-available' : 'status-borrowed';
+                const statusText = book.available ? 'Available' : 'Issued';
+                
+                bookCard.innerHTML = `
+                    <div class="book-title">📖 ${book.title}</div>
+                    <div class="book-info"><strong>ID:</strong> ${book.id}</div>
+                    <div class="book-info"><strong>Author:</strong> ${book.author}</div>
+                    <div class="book-info"><strong>Category:</strong> ${book.category}</div>
+                    ${book.issuedTo ? `<div class="book-info"><strong>Issued to:</strong> ${book.issuedTo}</div>` : ''}
+                    ${book.issueDate ? `<div class="book-info"><strong>Issue Date:</strong> ${book.issueDate}</div>` : ''}
+                    ${book.returnDate ? `<div class="book-info"><strong>Return Date:</strong> ${book.returnDate}</div>` : ''}
+                    <div class="book-info">
+                        <span class="book-status ${statusClass}">${statusText}</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteBook(${book.id})">Delete</button>
+                `;
+                
+                container.appendChild(bookCard);
+            });
+        }
+
+        function showAlert(containerId, message, type = 'success') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        function deleteBook(id) {
+            if (confirm('Are you sure you want to delete this book?')) {
+                const bookIndex = books.findIndex(book => book.id === id);
+                if (bookIndex !== -1) {
+                    books.splice(bookIndex, 1);
+                    updateDashboard();
+                    displayAllBooks();
+                    showAlert('add-alert', 'Book deleted successfully!');
+                }
+            }
+        }
+
+        // Form event listeners
+        document.getElementById('add-book-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('book-title').value.trim();
+            const author = document.getElementById('book-author').value.trim();
+            const category = document.getElementById('book-category').value;
+            
+            if (title && author) {
+                const newBook = {
+                    id: nextId++,
+                    title: title,
+                    author: author,
+                    category: category,
+                    available: true,
+                    issuedTo: null,
+                    issueDate: null,
+                    returnDate: null
+                };
+                
+                books.push(newBook);
+                this.reset();
+                updateDashboard();
+                showAlert('add-alert', 'Book added successfully!');
+            }
+        });
+
+        document.getElementById('issue-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const bookId = parseInt(document.getElementById('issue-book-id').value);
+            const studentName = document.getElementById('student-name').value.trim();
+            const issueDate = document.getElementById('issue-date').value;
+            const returnDate = document.getElementById('return-date').value;
+            
+            const book = books.find(b => b.id === bookId);
+            
+            if (!book) {
+                showAlert('issue-alert', 'Book not found!', 'error');
+                return;
+            }
+            
+            if (!book.available) {
+                showAlert('issue-alert', 'Book is already issued!', 'error');
+                return;
+            }
+            
+            book.available = false;
+            book.issuedTo = studentName;
+            book.issueDate = issueDate;
+            book.returnDate = returnDate;
+            
+            this.reset();
+            updateDashboard();
+            displayAllBooks();
+            showAlert('issue-alert', 'Book issued successfully!');
+        });
+
+        document.getElementById('return-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const bookId = parseInt(document.getElementById('return-book-id').value);
+            const book = books.find(b => b.id === bookId);
+            
+            if (!book) {
+                showAlert('issue-alert', 'Book not found!', 'error');
+                return;
+            }
+            
+            if (book.available) {
+                showAlert('issue-alert', 'Book is not issued!', 'error');
+                return;
+            }
+            
+            book.available = true;
+            book.issuedTo = null;
+            book.issueDate = null;
+            book.returnDate = null;
+            
+            this.reset();
+            updateDashboard();
+            displayAllBooks();
+            showAlert('issue-alert', 'Book returned successfully!');
+        });
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(query) || 
+                book.author.toLowerCase().includes(query)
+            );
+            displayBooksInContainer('all-books', filteredBooks);
+        });
+
+        // Set default dates
+        function setDefaultDates() {
+            const today = new Date();
+            const returnDate = new Date();
+            returnDate.setDate(today.getDate() + 14); // 2 weeks later
+            
+            document.getElementById('issue-date').value = today.toISOString().split('T')[0];
+            document.getElementById('return-date').value = returnDate.toISOString().split('T')[0];
+        }
+
+        // Initialize the system
+        window.addEventListener('load', function() {
+            initializeBooks();
+            setDefaultDates();
+        });
+    </script>
+</body>
+</html>
